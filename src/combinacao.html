@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SYSLocaCar - Adicionar Veículo</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Adicionar Veículo</h1>
+      <form id="veiculo-form">
+        <input type="text" id="placa" placeholder="Placa" required />
+        <input type="text" id="chassi" placeholder="Chassi" required />
+        <input
+          type="number"
+          id="anoFabricacao"
+          placeholder="Ano de Fabricação"
+          required
+        />
+        <input type="text" id="cor" placeholder="Cor" required />
+        <input
+          type="number"
+          id="modeloId"
+          placeholder="ID do Modelo"
+          required
+        />
+        <button type="submit">Adicionar Veículo</button>
+      </form>
+      <div id="veiculo-list">
+        <h2>Lista de Veículos</h2>
+        <ul id="list"></ul>
+      </div>
+    </div>
+    <script src="scripts.js"></script>
+  </body>
+</html>
+
+script: class VeiculoService { async createVeiculo(placa, chassi, anoFabricacao,
+cor, modeloId) { try { const response = await
+fetch("http://localhost:4545/api/createVeiculo", { method: "POST", headers: {
+"Content-Type": "application/json", }, body: JSON.stringify({ placa, chassi,
+anoFabricacao, cor, modeloId, }), }); if (response.ok) { alert("Veiculo created
+successfully!"); document.getElementById("placa").value = "";
+document.getElementById("chassi").value = "";
+document.getElementById("anoFabricacao").value = "";
+document.getElementById("cor").value = "";
+document.getElementById("modeloId").value = ""; this.fetchVeiculos(); } else {
+alert("Failed to create veiculo."); } } catch (error) { console.error("Error:",
+error); alert("An error occurred. Please try again."); } } async fetchVeiculos()
+{ try { const response = await fetch("http://localhost:4545/api/getVeiculos");
+if (response.ok) { const data = await response.json(); const list =
+document.getElementById("list"); list.innerHTML = ""; data.forEach((veiculo) =>
+{ const li = document.createElement("li"); li.textContent = ` Placa:
+${veiculo.placa} Chassi: ${veiculo.chassi} Ano de Fabricação:
+${veiculo.anoFabricacao} Cor: ${veiculo.cor} Status: ${veiculo.status} Modelo
+ID: ${veiculo.modeloId} Modelo Nome: ${veiculo.modelo.nome} Ano do Modelo: ${new
+Date(veiculo.modelo.anoModelo).getFullYear()} Quantidade do Modelo:
+${veiculo.modelo.qtModelo} Categoria ID: ${veiculo.modelo.categoriaId} Marca ID:
+${veiculo.modelo.marcaId} `; list.appendChild(li); }); } else { alert("Failed to
+fetch veiculos."); } } catch (error) { console.error("Error:", error); alert("An
+error occurred. Please try again."); } } } const veiculoService = new
+VeiculoService(); document .getElementById("veiculo-form")
+.addEventListener("submit", async (e) => { e.preventDefault(); const placa =
+document.getElementById("placa").value; const chassi =
+document.getElementById("chassi").value; const anoFabricacao =
+document.getElementById("anoFabricacao").value; const cor =
+document.getElementById("cor").value; const modeloId =
+document.getElementById("modeloId").value; veiculoService.createVeiculo(placa,
+chassi, anoFabricacao, cor, modeloId); }); // Fetch veiculos on page load
+veiculoService.fetchVeiculos(); css: * { box-sizing: border-box; } body {
+font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex;
+justify-content: center; align-items: center; height: 100vh; background-color:
+#f4f4f9; } .container { text-align: center; background: #fff; padding: 20px;
+border-radius: 5px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 70%;
+margin: 0 auto; } form { margin-bottom: 20px; } form input { padding: 10px;
+width: 100%; margin-right: 10px; margin-bottom: 20px; } form button { padding:
+10px 20px; background: #007bff; color: #fff; border: none; border-radius: 5px;
+cursor: pointer; width: 100%; } form button:hover { background: #0056b3; }
+#data-list ul { list-style: none; padding: 0; } #data-list ul li { background:
+#f4f4f9; margin: 5px 0; padding: 10px; border: 1px solid #ddd; border-radius:
+3px; }
